@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassifierApi", "ClassifierApi.csproj", "{C5B9ED45-E449-43E1-905F-61B2DF58C9A5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C5B9ED45-E449-43E1-905F-61B2DF58C9A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5B9ED45-E449-43E1-905F-61B2DF58C9A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5B9ED45-E449-43E1-905F-61B2DF58C9A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5B9ED45-E449-43E1-905F-61B2DF58C9A5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8E15D7DC-D27F-496E-8F0A-238443F2E0C1}
+	EndGlobalSection
+EndGlobal
