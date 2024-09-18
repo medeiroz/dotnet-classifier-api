@@ -1,4 +1,4 @@
-namespace ClassifierApi.Models;
+namespace ClassifierApi.Modules.Categories.Models;
 
 public class Category
 {

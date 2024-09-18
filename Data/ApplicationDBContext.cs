@@ -1,7 +1,7 @@
-using ClassifierApi.Models;
-using Microsoft.EntityFrameworkCore;
-
 namespace ClassifierApi.Data;
+
+using ClassifierApi.Modules.Categories.Models;
+using Microsoft.EntityFrameworkCore;
 
 public class ApplicationDBContext : DbContext
 {

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using ClassifierApi.Models;
 using ClassifierApi.Data;
+using ClassifierApi.Modules.Categories.Repositories.Contracts;
+using ClassifierApi.Modules.Categories.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDBContext>(opt =>
     opt.UseInMemoryDatabase("classifier"));
+
+// Register repositories
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
