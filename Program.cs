@@ -1,15 +1,27 @@
 using Microsoft.EntityFrameworkCore;
 using ClassifierApi.Data;
-using ClassifierApi.Modules.Categories.Repositories.Contracts;
 using ClassifierApi.Modules.Categories.Repositories;
+using ClassifierApi.MongoDB;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+MongoConventions.RegisterConventions();
 
+var mongoDBSettings = builder.Configuration.GetSection("MongoDBSettings").Get<MongoDBSettings>();
+builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDBSettings"));
+
+if (mongoDBSettings is null)
+{
+  throw new Exception("MongoDBSettings not found in configuration");
+}
+
+builder.Services.AddDbContext<ApplicationDBContext>(options =>
+options.UseMongoDB(mongoDBSettings.URI ?? "", mongoDBSettings.DatabaseName ?? ""));
+
+
+
+// Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddDbContext<ApplicationDBContext>(opt =>
-    opt.UseInMemoryDatabase("classifier"));
 
 // Register repositories
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();

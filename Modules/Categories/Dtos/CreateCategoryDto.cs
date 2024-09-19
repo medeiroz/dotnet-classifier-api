@@ -1,4 +1,5 @@
 using ClassifierApi.Modules.Categories.Models;
+using MongoDB.Bson;
 
 namespace ClassifierApi.Modules.Categories.Dtos;
 
@@ -11,6 +12,7 @@ public class CreateCategoryDto
   {
     return new Category
     {
+      _id = ObjectId.GenerateNewId(),
       Name = Name,
       Description = Description,
     };

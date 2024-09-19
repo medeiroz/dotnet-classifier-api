@@ -1,10 +1,11 @@
-namespace ClassifierApi.Modules.Categories.Controllers;
-
 using ClassifierApi.Exceptions;
 using ClassifierApi.Modules.Categories.Dtos;
 using ClassifierApi.Modules.Categories.Models;
-using ClassifierApi.Modules.Categories.Repositories.Contracts;
+using ClassifierApi.Modules.Categories.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+
+namespace ClassifierApi.Modules.Categories.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -22,12 +23,11 @@ public class CategoryController(ICategoryRepository repository) : ControllerBase
 
 
   [HttpGet("{id}")]
-  public async Task<ActionResult<Category>> GetById(int id)
+  public async Task<ActionResult<Category>> GetById(string Id)
   {
     try
     {
-      return await _repository.GetByIdAsync(id);
-
+      return await _repository.GetByIdAsync(new ObjectId(Id));
     }
     catch (RecordNotFoundException)
     {
@@ -36,20 +36,25 @@ public class CategoryController(ICategoryRepository repository) : ControllerBase
   }
 
   [HttpPost]
-  public async Task<ActionResult<Category>> Create(CreateCategoryDto categoryDto)
+  public async Task<ActionResult<Category>> Create(CreateCategoryDto CategoryDto)
   {
-    var entity = categoryDto.ToEntity();
+    var entity = CategoryDto.ToEntity();
 
     await _repository.StoreAsync(entity);
 
-    return CreatedAtAction(nameof(GetById), new { id = entity.Id }, entity);
+    return CreatedAtAction(nameof(GetById), new { id = entity._id }, entity);
   }
 
   [HttpPut("{id}")]
-  public async Task<IActionResult> Update(int id, UpdateCategoryDto categoryDto)
+  public async Task<IActionResult> Update(string Id, UpdateCategoryDto CategoryDto)
   {
-    var entity = categoryDto.ToEntity();
-    entity.Id = id;
+    if (Id == "")
+    {
+      return BadRequest();
+    }
+
+    var entity = CategoryDto.ToEntity();
+    entity._id = new ObjectId(Id);
 
     try
     {
@@ -63,16 +68,16 @@ public class CategoryController(ICategoryRepository repository) : ControllerBase
   }
 
   [HttpDelete("{id}")]
-  public async Task<IActionResult> Delete(int id)
+  public async Task<IActionResult> Delete(string Id)
   {
-    if (id <= 0)
+    if (Id == "")
     {
       return BadRequest();
     }
 
     try
     {
-      await _repository.DeleteAsync(id);
+      await _repository.DeleteAsync(new ObjectId(Id));
       return Ok();
     }
     catch (RecordNotFoundException)

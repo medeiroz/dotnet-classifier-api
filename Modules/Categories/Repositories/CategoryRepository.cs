@@ -1,12 +1,12 @@
-namespace ClassifierApi.Modules.Categories.Repositories;
-
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ClassifierApi.Data;
 using ClassifierApi.Exceptions;
 using ClassifierApi.Modules.Categories.Models;
-using ClassifierApi.Modules.Categories.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+
+namespace ClassifierApi.Modules.Categories.Repositories;
 
 public class CategoryRepository(ApplicationDBContext context) : ICategoryRepository
 {
@@ -18,7 +18,7 @@ public class CategoryRepository(ApplicationDBContext context) : ICategoryReposit
     return await _context.Categories.ToListAsync();
   }
 
-  public async Task<Category> GetByIdAsync(int id)
+  public async Task<Category> GetByIdAsync(ObjectId id)
   {
     var record = await _context.Categories.FindAsync(id);
 
@@ -33,11 +33,11 @@ public class CategoryRepository(ApplicationDBContext context) : ICategoryReposit
 
   public async Task<int> UpdateAsync(Category category)
   {
-    var recordExists = await this.ExistsAsync(category.Id);
+    var recordExists = await this.ExistsAsync(category._id);
 
     if (!recordExists)
     {
-      throw new RecordNotFoundException($"Category {category.Id} not found");
+      throw new RecordNotFoundException($"Category {category._id} not found");
     }
 
     _context.Entry(category).State = EntityState.Modified;
@@ -45,7 +45,7 @@ public class CategoryRepository(ApplicationDBContext context) : ICategoryReposit
     return await _context.SaveChangesAsync();
   }
 
-  public async Task<int> DeleteAsync(int id)
+  public async Task<int> DeleteAsync(ObjectId id)
   {
     var record = await _context.Categories.FindAsync(id);
 
@@ -58,13 +58,13 @@ public class CategoryRepository(ApplicationDBContext context) : ICategoryReposit
     return await _context.SaveChangesAsync();
   }
 
-  public async Task<bool> ExistsAsync(int? id)
+  public async Task<bool> ExistsAsync(ObjectId? id)
   {
     if (id == null)
     {
       return false;
     }
 
-    return await _context.Categories.AnyAsync(e => e.Id == id);
+    return await _context.Categories.AnyAsync(e => e._id == id);
   }
 }
