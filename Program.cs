@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ClassifierApi.Data;
 using ClassifierApi.Modules.Categories.Repositories;
 using ClassifierApi.MongoDB;
+using ClassifierApi.Modules.Categories.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,8 @@ builder.Services.AddControllers();
 // Register repositories
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
+// Register services
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

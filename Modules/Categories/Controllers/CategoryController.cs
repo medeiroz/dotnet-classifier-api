@@ -1,7 +1,6 @@
 using ClassifierApi.Exceptions;
 using ClassifierApi.Modules.Categories.Dtos;
-using ClassifierApi.Modules.Categories.Models;
-using ClassifierApi.Modules.Categories.Repositories;
+using ClassifierApi.Modules.Categories.Services;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 
@@ -9,25 +8,26 @@ namespace ClassifierApi.Modules.Categories.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CategoryController(ICategoryRepository repository) : ControllerBase
+public class CategoryController(ICategoryService service) : ControllerBase
 {
 
-  private readonly ICategoryRepository _repository = repository;
+  private readonly ICategoryService _service = service;
 
   [HttpGet]
-  public async Task<ActionResult<IEnumerable<Category>>> GetAll()
+  public async Task<IActionResult> GetAll()
   {
-    var records = await _repository.GetAllAsync();
+    var records = await _service.GetAll();
     return Ok(records);
   }
 
 
   [HttpGet("{id}")]
-  public async Task<ActionResult<Category>> GetById(string Id)
+  public async Task<IActionResult> GetById(string Id)
   {
     try
     {
-      return await _repository.GetByIdAsync(new ObjectId(Id));
+      var record = await _service.GetById(Id);
+      return Ok(record);
     }
     catch (RecordNotFoundException)
     {
@@ -36,13 +36,11 @@ public class CategoryController(ICategoryRepository repository) : ControllerBase
   }
 
   [HttpPost]
-  public async Task<ActionResult<Category>> Create(CreateCategoryDto CategoryDto)
+  public async Task<IActionResult> Create(CreateCategoryDto CategoryDto)
   {
-    var entity = CategoryDto.ToEntity();
+    var record = await _service.Create(CategoryDto);
 
-    await _repository.StoreAsync(entity);
-
-    return CreatedAtAction(nameof(GetById), new { id = entity._id }, entity);
+    return CreatedAtAction(nameof(Create), new { id = record._id }, record);
   }
 
   [HttpPut("{id}")]
@@ -53,12 +51,9 @@ public class CategoryController(ICategoryRepository repository) : ControllerBase
       return BadRequest();
     }
 
-    var entity = CategoryDto.ToEntity();
-    entity._id = new ObjectId(Id);
-
     try
     {
-      await _repository.UpdateAsync(entity);
+      await _service.Update(Id, CategoryDto);
       return Ok();
     }
     catch (RecordNotFoundException)
@@ -77,7 +72,7 @@ public class CategoryController(ICategoryRepository repository) : ControllerBase
 
     try
     {
-      await _repository.DeleteAsync(new ObjectId(Id));
+      await _service.Delete(Id);
       return Ok();
     }
     catch (RecordNotFoundException)
