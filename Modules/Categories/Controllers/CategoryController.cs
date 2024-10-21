@@ -22,12 +22,13 @@ public class CategoryController(ICategoryService service) : ControllerBase
 
 
   [HttpGet("{id}")]
-  public async Task<IActionResult> GetById(string Id)
+  public async Task<IActionResult> GetById(string id)
   {
     try
     {
-      var record = await _service.GetById(Id);
-      return Ok(record);
+      var record = await _service.GetById(id);
+      var response = ResponseCategoryDto.FromEntity(record);
+      return Ok(response);
     }
     catch (RecordNotFoundException)
     {
@@ -36,24 +37,24 @@ public class CategoryController(ICategoryService service) : ControllerBase
   }
 
   [HttpPost]
-  public async Task<IActionResult> Create(CreateCategoryDto CategoryDto)
+  public async Task<IActionResult> Create(CreateCategoryDto categoryDto)
   {
-    var record = await _service.Create(CategoryDto);
+    var record = await _service.Create(categoryDto);
 
     return CreatedAtAction(nameof(Create), new { id = record._id }, record);
   }
 
   [HttpPut("{id}")]
-  public async Task<IActionResult> Update(string Id, UpdateCategoryDto CategoryDto)
+  public async Task<IActionResult> Update(string id, UpdateCategoryDto categoryDto)
   {
-    if (Id == "")
+    if (id == "")
     {
       return BadRequest();
     }
 
     try
     {
-      await _service.Update(Id, CategoryDto);
+      await _service.Update(id, categoryDto);
       return Ok();
     }
     catch (RecordNotFoundException)
@@ -63,16 +64,16 @@ public class CategoryController(ICategoryService service) : ControllerBase
   }
 
   [HttpDelete("{id}")]
-  public async Task<IActionResult> Delete(string Id)
+  public async Task<IActionResult> Delete(string id)
   {
-    if (Id == "")
+    if (id == "")
     {
       return BadRequest();
     }
 
     try
     {
-      await _service.Delete(Id);
+      await _service.Delete(id);
       return Ok();
     }
     catch (RecordNotFoundException)

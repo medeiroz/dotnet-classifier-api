@@ -14,28 +14,28 @@ public class CategoryService(ICategoryRepository repository) : ICategoryService
     return await _repository.GetAllAsync();
   }
 
-  public async Task<Category> GetById(string Id)
+  public async Task<Category> GetById(string id)
   {
-    return await _repository.GetByIdAsync(new ObjectId(Id));
+    return await _repository.GetByIdAsync(new ObjectId(id));
   }
 
-  public async Task<Category> Create(CreateCategoryDto Dto)
+  public async Task<Category> Create(CreateCategoryDto createCategoryDto)
   {
-    var entity = Dto.ToEntity();
+    var entity = createCategoryDto.ToEntity();
     await _repository.StoreAsync(entity);
     return entity;
   }
 
-  public async Task<Category> Update(string Id, UpdateCategoryDto Dto)
+  public async Task<Category> Update(string id, UpdateCategoryDto updateCategoryDto)
   {
-    var entity = Dto.ToEntity();
-    entity._id = new ObjectId(Id);
+    var entity = updateCategoryDto.ToEntity();
+    entity._id = new ObjectId(id);
     await _repository.UpdateAsync(entity);
     return entity;
   }
 
-  public async Task<int> Delete(string Id)
+  public async Task<int> Delete(string id)
   {
-    return await _repository.DeleteAsync(new ObjectId(Id));
+    return await _repository.DeleteAsync(new ObjectId(id));
   }
 }
